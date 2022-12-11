@@ -25,10 +25,3 @@ func ListTodos(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Write(bytes)
 }
-
-func main() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/todos", ListTodos)
-
-	log.Fatal(http.ListenAndServe(":3333", mux))
-}

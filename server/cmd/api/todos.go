@@ -1,8 +1,6 @@
 package main
 
 import (
-	"encoding/json"
-	"log"
 	"net/http"
 )
 
@@ -11,17 +9,11 @@ type Todo struct {
 	Description string `json:"description"`
 }
 
-func enableCors(w *http.ResponseWriter) {
-	(*w).Header().Set("Access-Control-Allow-Origin", "http://localhost:5173")
-}
+func (app *application) ListTodos(w http.ResponseWriter, r *http.Request) {
 
-func ListTodos(w http.ResponseWriter, r *http.Request) {
-	enableCors(&w)
 	todos := []Todo{{"queacer", "Hacer queacer"}, {"Comprar cosas", "ir al super a comprar cosas"}}
-	bytes, err := json.Marshal(todos)
+	err := app.writeJSON(w, http.StatusOK, envelope{"todos": todos}, nil)
 	if err != nil {
-		log.Println("Not possible marshall todos", err)
-		return
+		app.logger.PrintError(err, nil)
 	}
-	w.Write(bytes)
 }

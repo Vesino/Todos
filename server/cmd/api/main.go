@@ -88,7 +88,6 @@ func openDB(cfg config) (*sql.DB, error) {
 	// context we created above as a parameter. If the connection couldn't be
 	// established successfully within the 5 second deadline, then this will return an
 	// error.
-
 	err = db.PingContext(ctx)
 	if err != nil {
 		return nil, err

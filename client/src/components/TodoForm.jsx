@@ -23,12 +23,11 @@ function TodoForm() {
             onChange={onInputChange}
             value={description}
         />
-        <input 
+        <button 
             type="button"
-            className="form-control mt-3 btn btn-primary"
+            className="mt-3 btn btn-primary"
             onClick={handleSaveTodo}
-            value="Save todo"
-        />
+        >Save</button>
     </>
   )
 }

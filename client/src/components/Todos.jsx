@@ -6,13 +6,14 @@ export default function Todos() {
     const [todos, setTodos] = useState([])
 
     useEffect(() => {
-        fetch("http://localhost:3333/todos")
+        fetch("http://localhost:3333/v1/todos/")
           .then(res => res.json())
           .then(
             (result) => {
               setIsLoaded(true);
-              setTodos(result);
+              setTodos(result?.todos);
             },
+
             // Note: it's important to handle errors here
             // instead of a catch() block so that we don't swallow
             // exceptions from actual bugs in components.
@@ -33,7 +34,6 @@ export default function Todos() {
             </li>
         ))}
         </ul>
-    
     }
     </>
   )

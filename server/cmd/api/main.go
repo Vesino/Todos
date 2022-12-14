@@ -43,7 +43,6 @@ func main() {
 
 	logger := jsonlog.New(os.Stdout, jsonlog.LevelInfo)
 
-	logger.PrintInfo(cfg.db.dsn, nil)
 	db, err := openDB(cfg)
 	if err != nil {
 		logger.PrintFatal(err, nil)

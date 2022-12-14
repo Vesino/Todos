@@ -47,7 +47,7 @@ export default function Todos() {
               <td>{todo?.todo}</td>
               <td>{todo?.description}</td>
               <td>{todo?.created_at}</td>
-              <td>{todo?.is_done}</td>
+              <td>{todo?.is_done?.toString()}</td>
             </tr>
             ))}
         </tbody>

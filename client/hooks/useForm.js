@@ -17,7 +17,12 @@ export default function useTodoForm() {
     const handleSaveTodo = (e) => {
       e.preventDefault();
       if (formState.todo === "" || formState.description === "") return;
-      console.log("Sending TODO to save", {formState});
+      const requestOptions = {
+        method: 'POST',
+        body: JSON.stringify({ todo: formState.todo, description: formState.description })
+    };
+    fetch('http://localhost:3333/v1/todos/', requestOptions)
+        .then(response => console.log(response.json()));
       setFormState({
         todo: "",
         description: "",}

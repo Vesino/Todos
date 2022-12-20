@@ -1,34 +1,14 @@
-import { useState, useEffect } from "react"
+import { memo } from "react"
 
-export default function Todos() {
-    const [error, setError] = useState(null);
-    const [isLoaded, setIsLoaded] = useState(false);
-    const [todos, setTodos] = useState([])
 
-    useEffect(() => {
-        fetch("http://localhost:3333/v1/todos/")
-          .then(res => res.json())
-          .then(
-            (result) => {
-              setIsLoaded(true);
-              setTodos(result?.todos);
-            },
 
-            // Note: it's important to handle errors here
-            // instead of a catch() block so that we don't swallow
-            // exceptions from actual bugs in components.
-            (error) => {
-              setIsLoaded(true);
-              setError(error);
-            }
-          )
-      }, [])
+const Todos = memo(({todos}) => {
     
   return (
     <>
     <h1 className="mt-2">Todos</h1>
   
-    { error && todos.length == 0 && <h1>An error occurred </h1>}
+    {todos.length == 0 && <h1>There is not Todos to show</h1>}
     {todos.length > 0 && 
       <table className="table table-striped">
           <thead>
@@ -55,4 +35,6 @@ export default function Todos() {
     }
     </>
   )
-}
+})
+
+export default Todos

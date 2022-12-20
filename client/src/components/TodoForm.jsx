@@ -1,10 +1,10 @@
 import useTodoForm from "../../hooks/useForm"
 
-function TodoForm() {
-    const { todo, description, onInputChange, handleSaveTodo } = useTodoForm()
+function TodoForm({addTodo, todos}) {
+    const { todo, description, onInputChange, handleSaveTodo } = useTodoForm({addTodo, todos})
   return (
     <>
-        <h1>Formulario simple</h1>
+        <h1>Manage your pending tasks</h1>
         <hr />
         <input 
             type="text" 

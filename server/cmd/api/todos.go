@@ -48,7 +48,7 @@ func (app *application) createTodoHandler(w http.ResponseWriter, r *http.Request
 	headers := make(http.Header)
 	headers.Set("Location", fmt.Sprintf("/v1/movies/%d", todo.ID))
 
-	err = app.writeJSON(w, http.StatusCreated, envelope{"movie": todo}, headers)
+	err = app.writeJSON(w, http.StatusCreated, envelope{"todo": todo}, headers)
 
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

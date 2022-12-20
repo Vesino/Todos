@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export default function useTodoForm() {
+export default function useTodoForm({addTodo, todos}) {
     const [formState, setFormState] = useState({
         todo: "",
         description: "",
@@ -22,10 +22,14 @@ export default function useTodoForm() {
         body: JSON.stringify({ todo: formState.todo, description: formState.description })
     };
     fetch('http://localhost:3333/v1/todos/', requestOptions)
-        .then(response => console.log(response.json()));
-      setFormState({
-        todo: "",
-        description: "",}
+        .then(response => response.json())
+           .then(({ todo }) => {
+             setFormState({
+               todo: "",
+               description: "",}
+             )
+             addTodo(todo)
+        }
       )
     }
 

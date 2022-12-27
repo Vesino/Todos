@@ -1,16 +1,17 @@
 import { memo } from "react"
-
+import Table from 'react-bootstrap/Table'
+import Todo from './Todo'
 
 
 const Todos = memo(({todos}) => {
-    
+
   return (
     <>
     <h1 className="mt-2">Todos</h1>
   
     {todos.length == 0 && <h1>There is not Todos to show</h1>}
     {todos.length > 0 && 
-      <table className="table table-striped">
+      <Table striped bordered hover >
           <thead>
           <tr>
             <th scope="col">#</th>
@@ -22,16 +23,10 @@ const Todos = memo(({todos}) => {
         </thead>
         <tbody>
             {todos.map(todo => (
-              <tr key={todo?.id}>
-              <th scope="row">{todo?.id}</th>
-              <td>{todo?.todo}</td>
-              <td>{todo?.description}</td>
-              <td>{todo?.created_at}</td>
-              <td>{todo?.is_done?.toString()}</td>
-            </tr>
+              <Todo key={todo.id} todo={todo} />
             ))}
         </tbody>
-      </table>
+      </Table>
     }
     </>
   )

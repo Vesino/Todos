@@ -14,8 +14,7 @@ function App() {
   )
   
   useEffect(() => {
-    console.log('Me trigerio el useEffect')
-      fetch("http://localhost:3333/v1/todos/")
+      fetch("http://localhost:3333/v1/todos")
         .then(res => res.json())
         .then(
           (result) => {

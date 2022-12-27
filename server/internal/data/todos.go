@@ -3,6 +3,7 @@ package data
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"log"
 	"time"
 )
@@ -33,6 +34,39 @@ func (m TodoModel) Insert(todo *Todo) error {
 	defer cancel()
 
 	return m.DB.QueryRowContext(ctx, query, args...).Scan(&todo.ID, &todo.CreatedAt)
+}
+
+func (m TodoModel) Get(id int64) (*Todo, error) {
+	if id < 1 {
+		return nil, ErrRecordNotFound
+	}
+	query := `
+	SELECT id, created_at, todo, description, is_done
+	FROM todos
+	WHERE id = $1
+	`
+
+	var todo Todo
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	err := m.DB.QueryRowContext(ctx, query, id).Scan(
+		&todo.ID,
+		&todo.CreatedAt,
+		&todo.Todo,
+		&todo.Description,
+		&todo.IsDone,
+	)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return nil, ErrRecordNotFound
+		default:
+			return nil, err
+		}
+	}
+	return &todo, nil
 }
 
 func (m TodoModel) GetAll() ([]*Todo, error) {
@@ -73,4 +107,35 @@ func (m TodoModel) GetAll() ([]*Todo, error) {
 	}
 
 	return todos, nil
+}
+
+func (t TodoModel) Update(todo *Todo) error {
+
+	query := `
+	UPDATE todos
+	SET todo = $1, description = $2, created_at = $3, is_done = $4
+	WHERE id = $5
+	RETURNING todo
+	`
+	args := []interface{}{
+		todo.Todo,
+		todo.Description,
+		todo.CreatedAt,
+		todo.IsDone,
+		todo.ID,
+	}
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+	err := t.DB.QueryRowContext(ctx, query, args...).Scan(&todo.Todo)
+
+	if err != nil {
+		switch {
+		case errors.Is(err, sql.ErrNoRows):
+			return ErrEditConflict
+		default:
+			return err
+		}
+	}
+	return nil
+
 }

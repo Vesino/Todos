@@ -11,8 +11,12 @@ func (app *application) routes() http.Handler {
 
 	router.HandlerFunc(http.MethodGet, "/v1/healthcheck", app.healthcheckHandler)
 
-	router.HandlerFunc(http.MethodGet, "/v1/todos/", app.listTodos)
-	router.HandlerFunc(http.MethodPost, "/v1/todos/", app.createTodoHandler)
+	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
+
+	router.HandlerFunc(http.MethodGet, "/v1/todos", app.listTodos)
+	router.HandlerFunc(http.MethodPost, "/v1/todos", app.createTodoHandler)
+	router.HandlerFunc(http.MethodGet, "/v1/todos/:id", app.showTodoHandler)
+	router.HandlerFunc(http.MethodPut, "/v1/todos/:id", app.updateTodoHandler)
 
 	return app.enableCORS(router)
 }

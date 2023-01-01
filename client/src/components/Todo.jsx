@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import TodoModalUpdate from './TodoModalUpdate'
 
-export default function Todo({todo}) {
+export default function Todo({todo, updateTodos}) {
     const [show, setShow] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -20,6 +20,7 @@ export default function Todo({todo}) {
             show={show}
             todo={todo}
             handleClose={handleClose}
+            updateTodos={updateTodos}
         /> : 
     null
     }

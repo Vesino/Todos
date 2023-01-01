@@ -3,8 +3,20 @@ import { useState } from "react"
 
 import {Modal, Button, Form} from 'react-bootstrap'
 
-export default function TodoModalUpdate({todo, show, handleClose}) {
+export default function TodoModalUpdate({todo, show, handleClose, updateTodos}) {
     const [currentTodo, setTodo] = useState(todo)
+
+    const handleIsDone = (e) => {
+        e.preventDefault()
+        const {name, value} = e.target
+        if (value === "on") {
+            setTodo({
+                ...currentTodo,
+                is_done: true
+            })
+        }
+        return
+    }
 
     const onInputChange = (e) => {
         e.preventDefault()
@@ -19,7 +31,6 @@ export default function TodoModalUpdate({todo, show, handleClose}) {
         e.preventDefault()
         if (currentTodo.todo === "" || currentTodo.description === "") return;
         const url = `http://localhost:3333/v1/todos/${currentTodo.id}`
-        console.log(url)
         delete currentTodo.id;
         const requestOptions = {
             method: 'PUT',
@@ -29,11 +40,8 @@ export default function TodoModalUpdate({todo, show, handleClose}) {
             .then(res => res.json())
                 .then(
                 ({todo}) => {
-                    console.log(todo);
+                    updateTodos(todo)
                 },
-                // Note: it's important to handle errors here
-                // instead of a catch() block so that we don't swallow
-                // exceptions from actual bugs in components.
                 (error) => {
                     console.error(error)
                 }
@@ -41,6 +49,8 @@ export default function TodoModalUpdate({todo, show, handleClose}) {
             .catch(error => {
                 console.error(error);
             })
+
+        handleClose();
     } 
 
     return(
@@ -77,6 +87,13 @@ export default function TodoModalUpdate({todo, show, handleClose}) {
                 onChange={onInputChange}
                 />
                 </Form.Group>
+                <Form.Check 
+                type="switch"
+                id="todo-switch"
+                onChange={handleIsDone}
+                name="is_done"
+                label="Is Done"
+                />
             </Form>
             </Modal.Body>
             <Modal.Footer>

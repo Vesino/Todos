@@ -12,6 +12,14 @@ function App() {
     },
     [],
   )
+
+  const updateTodos = useCallback(
+    (todo) => {
+      const todosUpdate = todos.filter(obj => obj.id != todo.id)
+      todosUpdate.push(todo)
+      setTodos(todosUpdate)
+    }
+  )
   
   useEffect(() => {
       fetch("http://localhost:3333/v1/todos")
@@ -20,10 +28,6 @@ function App() {
           (result) => {
             setTodos(result?.todos);
           },
-
-          // Note: it's important to handle errors here
-          // instead of a catch() block so that we don't swallow
-          // exceptions from actual bugs in components.
           (error) => {
             console.log(error)
           }
@@ -38,6 +42,7 @@ function App() {
       />
     <Todos 
       todos={todos}
+      updateTodos={updateTodos}
     />
     </>
   )

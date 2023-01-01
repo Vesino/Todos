@@ -6,6 +6,13 @@ import Todos from './components/Todos'
 function App() {
   const [todos, setTodos] = useState([])
 
+  const deleteTodo = useCallback(
+    (todo) => {
+      // this remove the deleted todo from the todos state
+      const newTodos = todos.filter(obj => obj.id != todo.id)
+      setTodos(newTodos)
+  })
+
   const addTodo = useCallback(
     (todo) => {
       setTodos(todos => [...todos, todo])
@@ -43,6 +50,7 @@ function App() {
     <Todos 
       todos={todos}
       updateTodos={updateTodos}
+      deleteTodo={deleteTodo}
     />
     </>
   )

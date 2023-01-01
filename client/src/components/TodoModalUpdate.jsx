@@ -3,8 +3,24 @@ import { useState } from "react"
 
 import {Modal, Button, Form} from 'react-bootstrap'
 
-export default function TodoModalUpdate({todo, show, handleClose, updateTodos}) {
+export default function TodoModalUpdate({todo, show, handleClose, updateTodos, deleteTodo}) {
     const [currentTodo, setTodo] = useState(todo)
+
+    const handleDelete = (e) => {
+        e.preventDefault()
+        const url = `http://localhost:3333/v1/todos/${currentTodo.id}`
+        const requestOptions = {
+            method: "DELETE",
+        }
+        fetch(url, requestOptions)
+        .then(res => res)
+        .then(
+            deleteTodo(currentTodo)
+        )
+        .catch(error => console.error(error))
+
+        handleClose();
+    }
 
     const handleIsDone = (e) => {
         e.preventDefault()
@@ -97,6 +113,7 @@ export default function TodoModalUpdate({todo, show, handleClose, updateTodos}) 
             </Form>
             </Modal.Body>
             <Modal.Footer>
+                <Button variant="danger" onClick={handleDelete}>Delete</Button>
                 <Button variant="secondary" onClick={handleClose}>Close</Button>
                 <Button variant="primary" onClick={handleUpdateTodo}>
                     Save Changes

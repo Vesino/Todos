@@ -3,7 +3,7 @@ import Table from 'react-bootstrap/Table'
 import Todo from './Todo'
 
 
-const Todos = memo(({todos, updateTodos}) => {
+const Todos = memo(({todos, updateTodos, deleteTodo}) => {
 
   return (
     <>
@@ -23,7 +23,11 @@ const Todos = memo(({todos, updateTodos}) => {
         </thead>
         <tbody>
             {todos.map(todo => (
-              <Todo key={todo.id} todo={todo} updateTodos={updateTodos}/>
+              <Todo key={todo.id} 
+              todo={todo} 
+              updateTodos={updateTodos}
+              deleteTodo={deleteTodo}
+              />
             ))}
         </tbody>
       </Table>

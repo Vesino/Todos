@@ -14,10 +14,13 @@ var (
 
 type Models struct {
 	Todos TodoModel
+	Users UserModel
 }
 
 func NewModels(db *sql.DB) Models {
 	return Models{
 		Todos: TodoModel{DB: db},
+		Users: UserModel{DB: db},
 	}
 }
+

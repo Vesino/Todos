@@ -11,6 +11,7 @@ import (
 
 	"github.com/Vesino/todos/internal/data"
 	"github.com/Vesino/todos/internal/jsonlog"
+	"github.com/Vesino/todos/internal/mailer"
 	_ "github.com/lib/pq"
 )
 
@@ -25,11 +26,20 @@ type config struct {
 		// maxIdleConns int
 		// maxIdleTime  string
 	}
+	smtp struct {
+		host string
+		port int
+		username string
+		password string
+		sender string
+	}
 }
+
 type application struct {
 	config config
 	logger *jsonlog.Logger
 	models data.Models
+	mailer mailer.Mailer
 }
 
 func main() {
@@ -38,6 +48,15 @@ func main() {
 	flag.IntVar(&cfg.port, "port", 3333, "Api server port")
 	flag.StringVar(&cfg.env, "enviroment", "development", "Environment (development|staging|production)")
 	flag.StringVar(&cfg.db.dsn, "db-dsn", os.Getenv("DB_DSN"), "PostgreSQL DSN")
+
+	// Read the SMTP server configuration settings into the config struct, using the
+	// settings as the default values.
+	flag.StringVar(&cfg.smtp.host, "smtp-host", "0.0.0.0", "SMTP Host")
+	flag.IntVar(&cfg.smtp.port, "smtp-port", 1025, "SMTP Port")
+	flag.StringVar(&cfg.smtp.username, "username", "", "SMTP Username")
+	flag.StringVar(&cfg.smtp.password, "password", "", "SMTP Password")
+	flag.StringVar(&cfg.smtp.sender, "sender", "Todos <no-reply@greenlight.alexedwards.net>", "SMTP sender")
+
 
 	flag.Parse()
 
@@ -55,6 +74,7 @@ func main() {
 		config: cfg,
 		logger: logger,
 		models: data.NewModels(db),
+		mailer: mailer.New(cfg.smtp.host, cfg.smtp.port, cfg.smtp.username, cfg.smtp.password, cfg.smtp.sender),
 	}
 
 	srv := &http.Server{

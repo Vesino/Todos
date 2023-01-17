@@ -78,3 +78,5 @@ sketch
 .env
 /cmd/.env
 api
+./server/api
+

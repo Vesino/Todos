@@ -56,6 +56,11 @@ func (app *application) registerUserHandler(w http.ResponseWriter, r *http.Reque
 		return
 	}
 
+	err = app.mailer.Send(user.Email, "user_welcome.tmpl", user)
+	if err != nil {
+		app.serverErrorResponse(w,r,err)
+		return
+	}
 	// write a JSON response containing the user data along with the 201 Created Status code
 	err = app.writeJSON(w, 201, envelope{"user": user}, nil)
 	if err != nil {

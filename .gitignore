@@ -76,6 +76,4 @@ sketch
 # End of https://www.toptal.com/developers/gitignore/api/go,react,macos
 
 .env
-api
-./server/api
 

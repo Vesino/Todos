@@ -85,7 +85,17 @@ func listenSignals(app *application, srv *http.Server, errorChan chan error) {
 	// error (which may happen because of a problem closing the listeners, or
 	// because the shutdown didn't complete before the 5-second context deadline is 
 	// hit). We relay this return value to the shutdownError channel.
-	errorChan <- srv.Shutdown(ctx)
+	err := srv.Shutdown(ctx)
+	if err != nil {
+		errorChan <- err
+	}
+
+	app.logger.PrintInfo("completing backround tasks", map[string]string{
+		"addr": srv.Addr,
+	})
+
+	app.wg.Wait()
+	errorChan <- nil
 }
 
 

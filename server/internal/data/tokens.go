@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"database/sql"
 	"encoding/base32"
-	"math/rand"
+	"crypto/rand"
 	"time"
 
 	"github.com/Vesino/todos/internal/validator"

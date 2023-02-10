@@ -16,6 +16,7 @@ type Models struct {
 	Todos TodoModel
 	Users UserModel
 	Tokens TokenModel
+	Permissions PermissionModel
 }
 
 func NewModels(db *sql.DB) Models {
@@ -23,6 +24,7 @@ func NewModels(db *sql.DB) Models {
 		Todos: TodoModel{DB: db},
 		Users: UserModel{DB: db},
 		Tokens: TokenModel{DB: db},
+		Permissions: PermissionModel{DB: db},
 	}
 }
 

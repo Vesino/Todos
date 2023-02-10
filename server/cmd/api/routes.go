@@ -14,11 +14,11 @@ func (app *application) routes() http.Handler {
 	router.MethodNotAllowed = http.HandlerFunc(app.methodNotAllowedResponse)
 
 	// Todos
-	router.HandlerFunc(http.MethodGet, "/v1/todos", app.requireActivatedUser(app.listTodos))
-	router.HandlerFunc(http.MethodPost, "/v1/todos", app.requireActivatedUser(app.createTodoHandler))
-	router.HandlerFunc(http.MethodGet, "/v1/todos/:id", app.requireActivatedUser(app.showTodoHandler))
-	router.HandlerFunc(http.MethodPut, "/v1/todos/:id", app.requireActivatedUser(app.updateTodoHandler))
-	router.HandlerFunc(http.MethodDelete, "/v1/todos/:id", app.requireActivatedUser(app.deleteTodoHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/todos", app.requirePermission("todos:read", app.listTodos))
+	router.HandlerFunc(http.MethodPost, "/v1/todos", app.requirePermission("todos:write", app.createTodoHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/todos/:id", app.requirePermission("todos:write", app.showTodoHandler))
+	router.HandlerFunc(http.MethodPut, "/v1/todos/:id", app.requirePermission("todos:write", app.updateTodoHandler))
+	router.HandlerFunc(http.MethodDelete, "/v1/todos/:id", app.requirePermission("todos:write", app.deleteTodoHandler))
 
 	// Users
 	router.HandlerFunc(http.MethodPost, "/v1/users", app.registerUserHandler)

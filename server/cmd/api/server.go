@@ -68,7 +68,9 @@ func listenSignals(app *application, srv *http.Server, errorChan chan error) {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 
 	// Read the signal from the quit channel, this block will block until a signal is received
-	// This happens because the channel is a buffered channel
+	// This happens because the nature of the channels communication
+	// it blocks until the channel can release a value, on a buffered channel, the channel can act as
+	// a queue, but on a unbuffered channel we can sync the channel's communication
 	s := <-quit
 
 	// log a message to say tha the signal has been caught.

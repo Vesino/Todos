@@ -16,7 +16,7 @@ func (app *application) routes() http.Handler {
 	// Todos
 	router.HandlerFunc(http.MethodGet, "/v1/todos", app.requirePermission("todos:read", app.listTodos))
 	router.HandlerFunc(http.MethodPost, "/v1/todos", app.requirePermission("todos:write", app.createTodoHandler))
-	router.HandlerFunc(http.MethodGet, "/v1/todos/:id", app.requirePermission("todos:write", app.showTodoHandler))
+	router.HandlerFunc(http.MethodGet, "/v1/todos/:id", app.requirePermission("todos:read", app.showTodoHandler))
 	router.HandlerFunc(http.MethodPut, "/v1/todos/:id", app.requirePermission("todos:write", app.updateTodoHandler))
 	router.HandlerFunc(http.MethodDelete, "/v1/todos/:id", app.requirePermission("todos:write", app.deleteTodoHandler))
 

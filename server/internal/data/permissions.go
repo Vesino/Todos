@@ -4,6 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/lib/pq"
 )
 
 type Permissions []string
@@ -11,7 +13,7 @@ type Permissions []string
 // Check if a specified permission is in the permissions list
 func (p Permissions) Include(permission string) bool {
 	for i := range p {
-		if code == p[i] {
+		if permission == p[i] {
 			return true
 		}
 	}
@@ -64,3 +66,17 @@ func (m PermissionModel) GetAllForUser(userID int64) (Permissions, error) {
 
 	return permissions, nil
 } 
+
+func (m PermissionModel) AddForUser(userID int64, codes ...string) error {
+	query := `
+	INSERT INTO users_permissions
+	SELECT $1, permissions.id FROM permissions WHERE permissions.code = ANY($2)
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	defer cancel()
+
+	_, err := m.DB.ExecContext(ctx, query, userID, pq.Array(codes))
+	return err
+}
+

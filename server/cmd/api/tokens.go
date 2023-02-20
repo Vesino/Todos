@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"errors"
 	"net/http"
 	"time"
@@ -35,6 +36,8 @@ func (app *application) createAuthenticationTokenHandler(w http.ResponseWriter, 
 	if err != nil {
 		switch {
 		case errors.Is(err, data.ErrRecordNotFound):
+		        app.invalidCredentialsResponse(w, r)
+		case errors.Is(err, sql.ErrNoRows):
 		        app.invalidCredentialsResponse(w, r)
 		default:
 		        app.serverErrorResponse(w, r, err)

@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/Vesino/todos/internal/data"
+	"github.com/Vesino/todos/internal/validator"
 )
 
 type Todo struct {
@@ -14,7 +15,27 @@ type Todo struct {
 	Description string `json:"description"`
 }
 
-func (app *application) listTodos(w http.ResponseWriter, r *http.Request) {
+func (app *application) listTodosHandler(w http.ResponseWriter, r *http.Request) {
+	// Definition of the input struct to hold the expected values from the request query string
+	var input struct {
+		Todo string
+		data.Filters
+	}
+
+	v := validator.New()
+
+	qs := r.URL.Query()
+
+	input.Todo = app.readString(qs, "todo", "")
+
+	input.Filters.Page = app.readInt(qs, "page", 1, v)
+	input.Filters.PageSize = app.readInt(qs, "page_size", 1, v)
+	input.Filters.Sort = app.readString(qs, "sort", "id")
+
+	if !v.Valid() {
+		app.failedValidationResponse(w, r, v.Errors)
+		return
+	}
 
 	todos, err := app.models.Todos.GetAll()
 

@@ -184,3 +184,7 @@ func (app *application) deleteTodoHandler(w http.ResponseWriter, r *http.Request
 		return
 	}
 }
+
+func Ping(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("OK"))
+}

@@ -37,7 +37,7 @@ func (m PermissionModel) GetAllForUser(userID int64) (Permissions, error) {
 	WHERE users.id = $1
         `
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	rows, err := m.DB.QueryContext(ctx, query, userID)
@@ -65,7 +65,7 @@ func (m PermissionModel) GetAllForUser(userID int64) (Permissions, error) {
 	}
 
 	return permissions, nil
-} 
+}
 
 func (m PermissionModel) AddForUser(userID int64, codes ...string) error {
 	query := `
@@ -73,10 +73,9 @@ func (m PermissionModel) AddForUser(userID int64, codes ...string) error {
 	SELECT $1, permissions.id FROM permissions WHERE permissions.code = ANY($2)
 	`
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	_, err := m.DB.ExecContext(ctx, query, userID, pq.Array(codes))
 	return err
 }
-

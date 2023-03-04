@@ -14,6 +14,7 @@ type Todo struct {
 	Description string    `json:"description"`
 	CreatedAt   time.Time `json:"created_at"`
 	IsDone      bool      `json:"is_done"`
+	UserId      int64     `json:"user_id"`
 }
 
 // Define a TodoModel struct type which wraps a sql.DB connection pool.
@@ -23,12 +24,12 @@ type TodoModel struct {
 
 func (m TodoModel) Insert(todo *Todo) error {
 	query := `
-		INSERT INTO todos (todo, description)
-		VALUES  ($1, $2)
+		INSERT INTO todos (todo, description, user_id)
+		VALUES  ($1, $2, $3)
 		RETURNING id, created_at
 	`
 
-	args := []interface{}{todo.Todo, todo.Description}
+	args := []interface{}{todo.Todo, todo.Description, todo.UserId}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()

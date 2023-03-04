@@ -63,6 +63,9 @@ func (app *application) createTodoHandler(w http.ResponseWriter, r *http.Request
 		Description: input.Description,
 	}
 
+	user := app.contextGetUser(r)
+	todo.UserId = user.ID
+
 	err = app.models.Todos.Insert(&todo)
 	if err != nil {
 		app.serverErrorResponse(w, r, err)

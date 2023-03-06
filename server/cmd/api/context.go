@@ -33,4 +33,3 @@ func (app *application) contextGetUser(r *http.Request) *data.User {
 	}
 	return user
 }
-

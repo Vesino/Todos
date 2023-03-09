@@ -27,7 +27,7 @@ type Mailer struct {
 }
 
 func New(host string, port int, username, password, sender string) Mailer {
-	// Initialize a new mail.Dialer instance with the given SMTP server settings. 
+	// Initialize a new mail.Dialer instance with the given SMTP server settings.
 	// We also configure this to use a 5-second timeout whenever we send an email.
 	dialer := mail.NewDialer(host, port, username, password)
 	dialer.Timeout = 5 * time.Second
@@ -45,7 +45,7 @@ func New(host string, port int, username, password, sender string) Mailer {
 func (m Mailer) Send(recipient, templateFile string, data interface{}) error {
 
 	// use the ParseFS method to parse the required template file from the embedded file system
-	tmpl, err := template.New("email").ParseFS(templateFS, "templates/" + templateFile)
+	tmpl, err := template.New("email").ParseFS(templateFS, "templates/"+templateFile)
 	if err != nil {
 		return err
 	}
@@ -89,7 +89,7 @@ func (m Mailer) Send(recipient, templateFile string, data interface{}) error {
 	// error
 	//try sending email up to three times before aborting and returning the final erro.
 	// Sleep for 500 miliseconds between each attempt
-	for i := 1; i <=3; i++ {
+	for i := 1; i <= 3; i++ {
 		err = m.dialer.DialAndSend(msg)
 		if err == nil {
 			return nil

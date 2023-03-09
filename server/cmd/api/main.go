@@ -27,11 +27,11 @@ type config struct {
 		// maxIdleTime  string
 	}
 	smtp struct {
-		host string
-		port int
+		host     string
+		port     int
 		username string
 		password string
-		sender string
+		sender   string
 	}
 }
 
@@ -40,7 +40,7 @@ type application struct {
 	logger *jsonlog.Logger
 	models data.Models
 	mailer mailer.Mailer
-	wg sync.WaitGroup
+	wg     sync.WaitGroup
 }
 
 func main() {
@@ -57,7 +57,6 @@ func main() {
 	flag.StringVar(&cfg.smtp.username, "username", "", "SMTP Username")
 	flag.StringVar(&cfg.smtp.password, "password", "", "SMTP Password")
 	flag.StringVar(&cfg.smtp.sender, "sender", "Todos <no-reply@greenlight.alexedwards.net>", "SMTP sender")
-
 
 	flag.Parse()
 

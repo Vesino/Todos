@@ -33,10 +33,10 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 				// response. This acts as a trigger to make Go's HTTP server
 				// automatically close the current connection after a response has been
 				// sent
-				w.Header().Set("Connection", "close")	
+				w.Header().Set("Connection", "close")
 				// The value returned by recover() has the type interface{}, so we use
 				// fmt.Errorf() to normalize it into an error and call our
-				// serverResponseError() helper. In turn, this will log the error using 
+				// serverResponseError() helper. In turn, this will log the error using
 				// our custom Logger type at the ERROR level and send the client a 500 Internal Server Response Error
 				app.serverErrorResponse(w, r, fmt.Errorf("%s", err))
 			}
@@ -48,14 +48,13 @@ func (app *application) recoverPanic(next http.Handler) http.Handler {
 func (app *application) rateLimit(next http.Handler) http.Handler {
 
 	type client struct {
-		limiter *rate.Limiter
+		limiter  *rate.Limiter
 		lastSeen time.Time
 	}
 
 	// Declare a mutex and a map to hold the clients' IP addresses and rate limiters.
 	var (
-
-		mu sync.Mutex
+		mu      sync.Mutex
 		clients = make(map[string]*client)
 	)
 
@@ -69,7 +68,7 @@ func (app *application) rateLimit(next http.Handler) http.Handler {
 			mu.Lock()
 
 			for ip, client := range clients {
-				if time.Since(client.lastSeen) > 3 * time.Minute {
+				if time.Since(client.lastSeen) > 3*time.Minute {
 					delete(clients, ip)
 				}
 			}
@@ -120,7 +119,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		authorizationHeader := r.Header.Get("Authorization")
 
 		// If there is no Authorization header found, use the contextSetUser() helper
-		// to add the AnonymousUser to the request context. Then we 
+		// to add the AnonymousUser to the request context. Then we
 		// call the next handler in the chain and return without executing any of the
 		// code below.
 		if authorizationHeader == "" {
@@ -161,9 +160,9 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 		if err != nil {
 			switch {
 			case errors.Is(err, data.ErrRecordNotFound):
-			        app.invalidAuthenticationTokenResponse(w, r)
+				app.invalidAuthenticationTokenResponse(w, r)
 			default:
-			        app.serverErrorResponse(w, r, err)
+				app.serverErrorResponse(w, r, err)
 			}
 			return
 		}
@@ -178,7 +177,7 @@ func (app *application) authenticate(next http.Handler) http.Handler {
 }
 
 // Create a new requireAuthenticatedUser() middleware to check that a user is not anonymous.
-func (app * application) requireAuthenticatedUser(next http.HandlerFunc) http.HandlerFunc {
+func (app *application) requireAuthenticatedUser(next http.HandlerFunc) http.HandlerFunc {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		user := app.contextGetUser(r)
 
@@ -240,4 +239,3 @@ func (app *application) requirePermission(permission string, next http.HandlerFu
 	// Wrap this with the requireActivatedUser() middleware before returning it.
 	return app.requireActivatedUser(fn)
 }
-

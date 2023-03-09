@@ -1,8 +1,7 @@
 package data
 
 type Filters struct {
-	Page int
+	Page     int
 	PageSize int
-	Sort string
+	Sort     string
 }
-

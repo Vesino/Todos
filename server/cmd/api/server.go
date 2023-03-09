@@ -14,20 +14,20 @@ import (
 func (app *application) serve() error {
 	// Declare a HTTP server using the same settings as in our main() function
 	srv := &http.Server{
-		Addr: fmt.Sprintf(":%d", app.config.port),
-		Handler: app.routes(),
+		Addr:         fmt.Sprintf(":%d", app.config.port),
+		Handler:      app.routes(),
 		IdleTimeout:  time.Minute,
-		ReadTimeout: 10 * time.Second,
+		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 30 * time.Second,
 	}
 
-        shutDownError := make(chan error)
+	shutDownError := make(chan error)
 	// start a background go routine
 	go listenSignals(app, srv, shutDownError)
 
 	app.logger.PrintInfo("starting server", map[string]string{
 		"addr": srv.Addr,
-		"env": app.config.env,
+		"env":  app.config.env,
 	})
 
 	// start the server as normal
@@ -42,9 +42,9 @@ func (app *application) serve() error {
 	}
 
 	// Otherwise, we wait to receive the return value from Shutdown() on the
-	// shutdownError channel. If return value is an error, we know that there was a 
+	// shutdownError channel. If return value is an error, we know that there was a
 	// problem with the graceful shutdown and we return the error
-	err = <- shutDownError
+	err = <-shutDownError
 	if err != nil {
 		return err
 	}
@@ -57,7 +57,6 @@ func (app *application) serve() error {
 	return nil
 
 }
-
 
 func listenSignals(app *application, srv *http.Server, errorChan chan error) {
 	// create a quit channel wich carries os.Signal values
@@ -79,13 +78,13 @@ func listenSignals(app *application, srv *http.Server, errorChan chan error) {
 	})
 
 	// create a context with 5 secont time out
-	ctx, cancel := context.WithTimeout(context.Background(), 5 * time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	// Call Shutdown() on our server, passing in the context we just made.
 	// Shutdown() will return nil if the graceful shutdown was successful, or an
 	// error (which may happen because of a problem closing the listeners, or
-	// because the shutdown didn't complete before the 5-second context deadline is 
+	// because the shutdown didn't complete before the 5-second context deadline is
 	// hit). We relay this return value to the shutdownError channel.
 	err := srv.Shutdown(ctx)
 	if err != nil {
@@ -99,5 +98,3 @@ func listenSignals(app *application, srv *http.Server, errorChan chan error) {
 	app.wg.Wait()
 	errorChan <- nil
 }
-
-
